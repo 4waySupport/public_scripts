@@ -24,7 +24,13 @@ echo "================================================================"
 
 # Start Tailscale with SSH enabled
 echo "Starting Tailscale with SSH enabled..."
-tailscale up --auth-key="$AUTH_KEY" --ssh
+if [ -z "$AUTH_KEY" ]; then
+    echo "No auth key provided. Running Tailscale without an auth key."
+    tailscale up --ssh
+else
+    echo "Using provided auth key for Tailscale authentication."
+    tailscale up --auth-key="$AUTH_KEY" --ssh
+fi
 
 # Wait for Tailscale to fully initialize
 echo "Waiting for Tailscale to initialize..."
