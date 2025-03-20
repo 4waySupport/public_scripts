@@ -19,18 +19,21 @@ curl -fsSL https://tailscale.com/install.sh | sh
 
 # Prompt for auth key
 echo "================================================================"
-read -p "Enter Tailscale auth key: " AUTH_KEY
+echo "Please provide your Tailscale authentication key."
+echo "You can generate this from the Tailscale admin console."
+echo "The key typically starts with 'tskey-' followed by letters and numbers."
 echo "================================================================"
+read -p "Enter Tailscale auth key: " AUTH_KEY
+
+while [ -z "$AUTH_KEY" ]; do
+    echo "No auth key provided. Please enter a valid Tailscale auth key."
+    read -p "Enter Tailscale auth key: " AUTH_KEY
+done
 
 # Start Tailscale with SSH enabled
 echo "Starting Tailscale with SSH enabled..."
-if [ -z "$AUTH_KEY" ]; then
-    echo "No auth key provided. Running Tailscale without an auth key."
-    tailscale up --ssh
-else
-    echo "Using provided auth key for Tailscale authentication."
-    tailscale up --auth-key="$AUTH_KEY" --ssh
-fi
+echo "Using provided auth key for Tailscale authentication."
+tailscale up --auth-key="$AUTH_KEY" --ssh
 
 # Wait for Tailscale to fully initialize
 echo "Waiting for Tailscale to initialize..."
